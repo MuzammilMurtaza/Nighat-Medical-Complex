@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nighat Medical Complex | Clinic Management</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23087f8c%22/%3E%3Cpath d=%22M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z%22 fill=%22white%22/%3E%3C/svg%3E">
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="../patient/icons.js"></script>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- COMPLETE ADMIN APPLICATION -->
+    <div class="admin-app">
+
+        <!-- =================================================
+             SIDEBAR NAVIGATION
+        ================================================== -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">
+                    <i data-lucide="shield-plus"></i>
+                </div>
+                <div class="sidebar-brand-text">
+                    <h2>Nighat Medical Complex</h2>
+                    <p>Clinical Operations OS</p>
+                </div>
+            </div>
+
+            <!-- Doctor Profile Badge Mini -->
+            <div class="doctor-spec-pill">
+                <span class="pill-dot"></span>
+                <span>Stay Young Clinic • Lahore</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="sidebar-navigation">
+                <!-- MAIN SECTION -->
+                <div class="nav-section">
+                    <p class="nav-section-title">CLINIC INTELLIGENCE</p>
+
+                    <button class="nav-item active" type="button" data-page="overview">
+                        <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
+                        <span class="nav-label">Overview</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="appointments">
+                        <span class="nav-icon"><i data-lucide="calendar-check"></i></span>
+                        <span class="nav-label">Appointments</span>
+                        <span class="nav-count" id="appointmentNavCount">0</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="calendar">
+                        <span class="nav-icon"><i data-lucide="calendar"></i></span>
+                        <span class="nav-label">Slot Calendar</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="patients">
+                        <span class="nav-icon"><i data-lucide="users"></i></span>
+                        <span class="nav-label">Patients Directory</span>
+                    </button>
+                </div>
+
+                <!-- CLINIC MANAGEMENT -->
+                <div class="nav-section">
+                    <p class="nav-section-title">SCHEDULE & PRACTICE</p>
+
+                    <button class="nav-item" type="button" data-page="doctor-profile">
+                        <span class="nav-icon"><i data-lucide="stethoscope"></i></span>
+                        <span class="nav-label">Doctor Profile</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="clinics">
+                        <span class="nav-icon"><i data-lucide="building-2"></i></span>
+                        <span class="nav-label">Knowledge Base</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="weekly-schedule">
+                        <span class="nav-icon"><i data-lucide="clock"></i></span>
+                        <span class="nav-label">Weekly Working Hours</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="off-days">
+                        <span class="nav-icon"><i data-lucide="calendar-x"></i></span>
+                        <span class="nav-label">Doctor Off-Days</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="special-schedules">
+                        <span class="nav-icon"><i data-lucide="calendar-plus"></i></span>
+                        <span class="nav-label">Special Schedules</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="blocked-slots">
+                        <span class="nav-icon"><i data-lucide="shield-alert"></i></span>
+                        <span class="nav-label">Blocked Time Slots</span>
+                    </button>
+                </div>
+
+                <!-- CLINICAL SERVICES -->
+                <div class="nav-section">
+                    <p class="nav-section-title">SERVICES & CLINICAL DATA</p>
+
+                    <button class="nav-item" type="button" data-page="services">
+                        <span class="nav-icon"><i data-lucide="sparkles"></i></span>
+                        <span class="nav-label">Treatments & Procedures</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="reports">
+                        <span class="nav-icon"><i data-lucide="file-text"></i></span>
+                        <span class="nav-label">Medical Reports</span>
+                        <span class="nav-count" id="reportNavCount">0</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="virtual-consultation">
+                        <span class="nav-icon"><i data-lucide="video"></i></span>
+                        <span class="nav-label">Online Consultations</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="emergency-alerts">
+                        <span class="nav-icon"><i data-lucide="alert-triangle"></i></span>
+                        <span class="nav-label">Emergency Alerts</span>
+                        <span class="nav-count emergency-count" id="emergencyNavCount">0</span>
+                    </button>
+                </div>
+
+                <!-- COMMUNICATION & ADS -->
+                <div class="nav-section">
+                    <p class="nav-section-title">COMMUNICATION & ADS</p>
+
+                    <button class="nav-item" type="button" data-page="ads-leads">
+                        <span class="nav-icon"><i data-lucide="megaphone"></i></span>
+                        <span class="nav-label">Ads Leads & WhatsApp</span>
+                        <span class="nav-count highlight-count" id="leadsNavCount">0</span>
+                    </button>
+
+                    <button class="nav-item" type="button" data-page="staff-inbox">
+                        <span class="nav-icon"><i data-lucide="message-square"></i></span>
+                        <span class="nav-label">Staff Inbox (Handover)</span>
+                        <span class="nav-count" id="inboxNavCount">0</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- SIDEBAR FOOTER -->
+            <div class="sidebar-bottom">
+                <div class="admin-profile-mini">
+                    <div class="admin-profile-avatar">
+                        <i data-lucide="user-check"></i>
+                    </div>
+                    <div class="admin-profile-info">
+                        <strong>Clinical Admin</strong>
+                        <small>Super Administrator</small>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer-actions">
+                    <a href="../patient/index.html" class="patient-portal-link" target="_blank" title="Open Patient Portal">
+                        <i data-lucide="external-link"></i>
+                        <span>Patient Portal</span>
+                    </a>
+                    <button class="logout-button" id="logoutButton" type="button" title="Sign Out">
+                        <i data-lucide="log-out"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- =================================================
+             MAIN ADMIN CONTENT AREA
+        ================================================== -->
+        <main class="admin-main">
+            <!-- Top Navigation Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Toggle Navigation">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div>
+                        <h1 id="pageTitle">Clinic Overview</h1>
+                        <p id="pageSubtitle">Real-time clinical operations and patient flow analytics</p>
+                    </div>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Live Time Lahore Clock -->
+                    <div class="topbar-time-chip">
+                        <i data-lucide="clock"></i>
+                        <span id="lahoreLiveClock">--:-- PKT</span>
+                    </div>
+
+                    <!-- Clinic Status Pill -->
+                    <div class="topbar-status-chip">
+                        <span class="pulse-emerald"></span>
+                        <span>Clinic Open</span>
+                    </div>
+
+                    <!-- Quick Patient Portal Button -->
+                    <a href="../patient/index.html" target="_blank" class="topbar-portal-btn">
+                        <i data-lucide="layout-grid"></i>
+                        <span>Patient Concierge</span>
+                    </a>
+
+                    <!-- Refresh Dashboard Button -->
+                    <button class="topbar-icon-button" type="button" id="refreshDashboardButton" title="Refresh Live Data">
+                        <i data-lucide="rotate-cw"></i>
+                    </button>
+
+                    <!-- Notifications Button -->
+                    <button class="notification-button" type="button" id="notificationButton" title="Notifications">
+                        <i data-lucide="bell"></i>
+                        <span class="notification-indicator" id="notificationIndicator"></span>
+                    </button>
+
+                    <!-- Admin Profile Card -->
+                    <div class="topbar-admin">
+                        <div class="topbar-admin-avatar">
+                            <span>DN</span>
+                        </div>
+                        <div class="topbar-admin-text">
+                            <strong>Nighat Medical Complex</strong>
+                            <small>Stay Young Lahore</small>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Admin Content Wrapper -->
+            <div class="admin-content" id="adminContent">
+
+                <!-- OVERVIEW PAGE -->
+                <section class="admin-page active-page" id="overviewPage" data-admin-page="overview">
+                    
+                    <!-- Welcome Hero Card -->
+                    <div class="overview-hero-card">
+                        <div class="hero-left">
+                            <div class="hero-badge">
+                                <i data-lucide="activity"></i>
+                                <span>Pain Management & Regenerative Medicine</span>
+                            </div>
+                            <h2>Welcome back, Clinic Administrator</h2>
+                            <p>Supervise appointments, doctor schedules, diagnostic reports, and automated lead follow-ups in real time.</p>
+                        </div>
+                        <div class="hero-actions">
+                            <span class="live-status" id="liveStatus">
+                                <span class="live-status-dot"></span>
+                                Live Sync Active
+                            </span>
+                            <button class="hero-quick-btn" type="button" data-open-page="appointments">
+                                <i data-lucide="plus-circle"></i>
+                                <span>Manage Appointments</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Statistics Grid -->
+                    <section class="dashboard-statistics">
+                        <!-- 1. Today's Appointments -->
+                        <article class="stat-card stat-teal">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="calendar"></i></div>
+                                <span class="stat-label">TODAY</span>
+                            </div>
+                            <strong class="stat-number" id="todayAppointments">0</strong>
+                            <p>Today's Appointments</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 75%;"></div></div>
+                        </article>
+
+                        <!-- 2. Confirmed -->
+                        <article class="stat-card stat-emerald">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="check-circle-2"></i></div>
+                                <span class="stat-label">CONFIRMED</span>
+                            </div>
+                            <strong class="stat-number" id="confirmedAppointments">0</strong>
+                            <p>Confirmed Patients</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 60%; background: #10B981;"></div></div>
+                        </article>
+
+                        <!-- 3. Completed -->
+                        <article class="stat-card stat-purple">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="clipboard-check"></i></div>
+                                <span class="stat-label">COMPLETED</span>
+                            </div>
+                            <strong class="stat-number" id="completedAppointments">0</strong>
+                            <p>Completed Visits</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 50%; background: #8B5CF6;"></div></div>
+                        </article>
+
+                        <!-- 4. Cancelled -->
+                        <article class="stat-card stat-rose">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="x-circle"></i></div>
+                                <span class="stat-label">CANCELLED</span>
+                            </div>
+                            <strong class="stat-number" id="cancelledAppointments">0</strong>
+                            <p>Cancelled Bookings</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 15%; background: #EF4444;"></div></div>
+                        </article>
+
+                        <!-- 5. No-Shows -->
+                        <article class="stat-card stat-amber">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="user-x"></i></div>
+                                <span class="stat-label">NO-SHOW</span>
+                            </div>
+                            <strong class="stat-number" id="noShowAppointments">0</strong>
+                            <p>No-Show Instances</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 10%; background: #F59E0B;"></div></div>
+                        </article>
+
+                        <!-- 6. Available Slots -->
+                        <article class="stat-card stat-blue">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="clock-4"></i></div>
+                                <span class="stat-label">OPEN</span>
+                            </div>
+                            <strong class="stat-number" id="availableSlots">0</strong>
+                            <p>Available Slots Today</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 80%; background: #0284C7;"></div></div>
+                        </article>
+
+                        <!-- 7. Blocked Slots -->
+                        <article class="stat-card stat-slate">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="shield-ban"></i></div>
+                                <span class="stat-label">BLOCKED</span>
+                            </div>
+                            <strong class="stat-number" id="blockedSlots">0</strong>
+                            <p>Blocked Time Slots</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 20%; background: #64748B;"></div></div>
+                        </article>
+
+                        <!-- 8. Doctor Leave -->
+                        <article class="stat-card stat-amber">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="calendar-off"></i></div>
+                                <span class="stat-label">SCHEDULE</span>
+                            </div>
+                            <strong class="stat-number" id="doctorLeave">0</strong>
+                            <p>Upcoming Doctor Off-Days</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 10%; background: #F59E0B;"></div></div>
+                        </article>
+
+                        <!-- 9. Pending Consultations -->
+                        <article class="stat-card stat-indigo">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="video"></i></div>
+                                <span class="stat-label">VIRTUAL</span>
+                            </div>
+                            <strong class="stat-number" id="pendingConsultations">0</strong>
+                            <p>Virtual Consult Requests</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 40%; background: #6366F1;"></div></div>
+                        </article>
+
+                        <!-- 10. Human Handovers -->
+                        <article class="stat-card stat-cyan">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="headset"></i></div>
+                                <span class="stat-label">STAFF INBOX</span>
+                            </div>
+                            <strong class="stat-number" id="humanHandovers">0</strong>
+                            <p>Human Handovers</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 35%; background: #06B6D4;"></div></div>
+                        </article>
+
+                        <!-- 11. Emergency Alerts -->
+                        <article class="stat-card stat-red">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="siren"></i></div>
+                                <span class="stat-label">URGENT</span>
+                            </div>
+                            <strong class="stat-number" id="pendingEmergencyAlerts">0</strong>
+                            <p>Pending Emergency Triage</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 5%; background: #DC2626;"></div></div>
+                        </article>
+
+                        <!-- 12. Uploaded Reports -->
+                        <article class="stat-card stat-teal">
+                            <div class="stat-card-top">
+                                <div class="stat-icon"><i data-lucide="file-check-2"></i></div>
+                                <span class="stat-label">REPORTS</span>
+                            </div>
+                            <strong class="stat-number" id="pendingReports">0</strong>
+                            <p>Diagnostic Reports to Review</p>
+                            <div class="stat-footer-bar"><div class="stat-progress" style="width: 45%; background: #0D9488;"></div></div>
+                        </article>
+                    </section>
+
+                    <!-- System Integrations & Telemetry Strip -->
+                    <section class="dashboard-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Active Integrations & Backend Services</h3>
+                                <p>Live health telemetry for database, APIs, WhatsApp gateway, and automated follow-up daemon</p>
+                            </div>
+                        </div>
+                        <div class="integration-status-grid">
+                            <div class="integration-item">
+                                <span class="integration-icon-bullet"><i data-lucide="database"></i></span>
+                                <div class="integration-text">
+                                    <span class="integration-name">MongoDB Database</span>
+                                    <small>Safe Medical Schema</small>
+                                </div>
+                                <span class="integration-badge connected" id="databaseStatus">CONNECTED</span>
+                            </div>
+
+                            <div class="integration-item">
+                                <span class="integration-icon-bullet"><i data-lucide="message-circle"></i></span>
+                                <div class="integration-text">
+                                    <span class="integration-name">WhatsApp Cloud API</span>
+                                    <small>Lead & Patient Bot</small>
+                                </div>
+                                <span class="integration-badge connected" id="whatsappStatus">SIMULATION ACTIVE</span>
+                            </div>
+
+                            <div class="integration-item">
+                                <span class="integration-icon-bullet"><i data-lucide="calendar"></i></span>
+                                <div class="integration-text">
+                                    <span class="integration-name">Appointment Engine</span>
+                                    <small>Sequential Daily Tokens</small>
+                                </div>
+                                <span class="integration-badge connected" id="appointmentApiStatus">CONNECTED</span>
+                            </div>
+
+                            <div class="integration-item">
+                                <span class="integration-icon-bullet"><i data-lucide="bell"></i></span>
+                                <div class="integration-text">
+                                    <span class="integration-name">Automated Reminders</span>
+                                    <small>Follow-up Scheduler</small>
+                                </div>
+                                <span class="integration-badge connected" id="reminderStatus">ENABLED</span>
+                            </div>
+
+                            <div class="integration-item">
+                                <span class="integration-icon-bullet"><i data-lucide="hard-drive"></i></span>
+                                <div class="integration-text">
+                                    <span class="integration-name">Report Storage</span>
+                                    <small>Sanitized Uploads (10MB)</small>
+                                </div>
+                                <span class="integration-badge connected" id="fileStorageStatus">CONNECTED</span>
+                            </div>
+
+                            <div class="integration-item">
+                                <span class="integration-icon-bullet"><i data-lucide="bot"></i></span>
+                                <div class="integration-text">
+                                    <span class="integration-name">AI Assistant Engine</span>
+                                    <small>Bilingual (EN / اردو)</small>
+                                </div>
+                                <span class="integration-badge connected" id="aiStatus">ACTIVE</span>
+                            </div>
+
+                            <div class="integration-item">
+                                <span class="integration-icon-bullet"><i data-lucide="trending-up"></i></span>
+                                <div class="integration-text">
+                                    <span class="integration-name">Meta Ads Pipeline</span>
+                                    <small>CRM Webhook Sync</small>
+                                </div>
+                                <span class="integration-badge connected" id="adsAutomationStatus">ACTIVE</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Recent Appointments Data Table -->
+                    <section class="dashboard-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Recent Live Appointments</h3>
+                                <p>Sequential token bookings and live patient check-ins</p>
+                            </div>
+                            <button class="panel-action-button" type="button" data-open-page="appointments">
+                                <span>Open Full Directory</span>
+                                <i data-lucide="arrow-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Token</th>
+                                        <th>Appointment ID</th>
+                                        <th>Patient Name</th>
+                                        <th>Phone</th>
+                                        <th>Consultation Type</th>
+                                        <th>Date & Slot</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentAppointmentsTable">
+                                    <tr class="empty-table-row">
+                                        <td colspan="8">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon">
+                                                    <i data-lucide="calendar"></i>
+                                                </div>
+                                                <strong>No appointments recorded yet</strong>
+                                                <p>New bookings will appear here automatically in real time.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </section>
+
+                <!-- DYNAMIC ADMIN PAGE CONTAINER (Injected via admin.js) -->
+                <section class="admin-page" id="dynamicAdminPage"></section>
+            </div>
+        </main>
+    </div>
+
+    <!-- =====================================================
+         MODALS & UNIFIED CONVERSATION DRAWERS
+    ====================================================== -->
+
+    <!-- 1. Lead Conversation Modal -->
+    <div class="lead-modal-backdrop" id="leadConversationModal" style="display: none;">
+        <div class="lead-modal-container">
+            <div class="lead-modal-header">
+                <div class="lead-modal-title-group">
+                    <div class="lead-avatar" id="modalLeadAvatar">L</div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3 id="modalLeadName">Lead Name</h3>
+                            <span class="source-badge" id="modalSourceBadge">Meta Ad</span>
+                            <span class="mode-badge" id="modalModeIndicator">AI Active</span>
+                        </div>
+                        <p id="modalLeadPhone" style="font-size: 12px; color: #64748B; margin-top: 2px;">+92 300 1234567</p>
+                    </div>
+                </div>
+                <div class="lead-modal-header-actions">
+                    <button class="lead-header-btn" id="btnToggleAi" type="button" title="Switch to AI Assistant">
+                        <i data-lucide="bot"></i> AI
+                    </button>
+                    <button class="lead-header-btn" id="btnToggleManual" type="button" title="Take Over Manually">
+                        <i data-lucide="user"></i> Take Over
+                    </button>
+                    <a href="#" class="lead-header-btn whatsapp-btn" id="modalWaLink" target="_blank" title="WhatsApp Web">
+                        <i data-lucide="message-circle"></i> WhatsApp
+                    </a>
+                    <a href="#" class="lead-header-btn call-btn" id="modalCallLink" title="Call">
+                        <i data-lucide="phone"></i> Call
+                    </a>
+                    <button class="modal-close-btn" onclick="closeLeadModal()" type="button">✕</button>
+                </div>
+            </div>
+
+            <div class="lead-modal-body">
+                <!-- Left Details Column -->
+                <div class="lead-modal-col-details">
+                    <div class="lead-section-card">
+                        <h4>Lead Status & Assignment</h4>
+                        <div class="lead-field-grid">
+                            <div class="lead-field">
+                                <label for="modalLeadStatus">Pipeline Status</label>
+                                <select id="modalLeadStatus" class="lead-select" onchange="updateLeadFromModal()">
+                                    <option value="new">New Lead</option>
+                                    <option value="contacted">Contacted</option>
+                                    <option value="qualified">Qualified</option>
+                                    <option value="booked">Booked Appointment</option>
+                                    <option value="followup_scheduled">Follow-up Scheduled</option>
+                                    <option value="lost">Lost</option>
+                                </select>
+                            </div>
+                            <div class="lead-field">
+                                <label for="modalPriority">Priority</label>
+                                <select id="modalPriority" class="lead-select" onchange="updateLeadFromModal()">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="lead-field">
+                                <label for="modalAssignedTo">Assigned Staff</label>
+                                <input type="text" id="modalAssignedTo" class="lead-input" placeholder="Staff Name" onblur="updateLeadFromModal()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lead-section-card" id="modalAppointmentSection">
+                        <h4>Booked Appointment</h4>
+                        <div id="modalApptDetails" class="appt-status-box">No appointment booked yet.</div>
+                    </div>
+
+                    <div class="lead-section-card">
+                        <h4>Follow-Up Scheduling</h4>
+                        <div class="lead-field-grid">
+                            <div class="lead-field">
+                                <label for="modalFollowUpDate">Next Follow-Up</label>
+                                <input type="datetime-local" id="modalFollowUpDate" class="lead-input" onchange="updateLeadFromModal()">
+                            </div>
+                            <div class="lead-field">
+                                <label for="modalFollowUpNote">Follow-Up Note</label>
+                                <input type="text" id="modalFollowUpNote" class="lead-input" placeholder="e.g. Call regarding knee MRI" onblur="updateLeadFromModal()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lead-section-card">
+                        <h4>Staff Internal Notes</h4>
+                        <textarea id="modalNotes" class="lead-textarea" rows="3" placeholder="Add clinical or operational notes..." onblur="updateLeadFromModal()"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right Conversation Column -->
+                <div class="lead-modal-col-chat">
+                    <div class="manual-mode-banner" id="modalManualBanner" style="display: none;">
+                        <i data-lucide="user-check"></i>
+                        <span>Manual Takeover Active — Automated responses paused for this patient.</span>
+                    </div>
+
+                    <div class="lead-messages-timeline" id="modalMessagesContainer">
+                        <div class="lead-msg-empty">No conversation history found for this lead.</div>
+                    </div>
+
+                    <div class="lead-chat-composer">
+                        <input type="text" id="modalComposerInput" class="lead-composer-input" placeholder="Type staff message or clinical answer..." onkeydown="if(event.key==='Enter') sendLeadManualMessage()">
+                        <button class="lead-composer-send" id="btnSendLeadMessage" type="button" onclick="sendLeadManualMessage()">
+                            <i data-lucide="send"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Add Lead Modal -->
+    <div class="lead-modal-backdrop" id="addLeadModal" style="display: none;">
+        <div class="lead-modal-container modal-small">
+            <div class="lead-modal-header">
+                <h3>Add New Patient / Lead</h3>
+                <button class="modal-close-btn" onclick="closeAddLeadModal()" type="button">✕</button>
+            </div>
+            <form id="addLeadForm" onsubmit="submitNewLead(event)" class="lead-modal-body modal-form-body">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Patient Full Name *</label>
+                        <input type="text" id="newLeadName" class="form-input" required placeholder="e.g. Tariq Mehmood">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Phone / WhatsApp *</label>
+                        <input type="tel" id="newLeadPhone" class="form-input" required placeholder="03001234567">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Lead Source</label>
+                        <select id="newLeadSource" class="form-input">
+                            <option value="meta_ad">Meta Ad (Facebook / Instagram)</option>
+                            <option value="whatsapp">Direct WhatsApp</option>
+                            <option value="website">Patient Concierge Portal</option>
+                            <option value="walk_in">Walk-in Clinic</option>
+                            <option value="call">Phone Call</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Priority</label>
+                        <select id="newLeadPriority" class="form-input">
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Treatment Interest</label>
+                        <select id="newLeadTreatment" class="form-input">
+                            <option value="">General Pain Consultation</option>
+                            <option value="Knee Arthritis & Joint Pain">Knee Arthritis & Joint Pain</option>
+                            <option value="Prolotherapy Regenerative Injections">Prolotherapy Regenerative Injections</option>
+                            <option value="Platelet-Rich Plasma (PRP) Therapy">Platelet-Rich Plasma (PRP) Therapy</option>
+                            <option value="Sciatica & Back Pain">Sciatica & Back Pain</option>
+                            <option value="Shoulder Frozen & Rotator Cuff">Shoulder Frozen & Rotator Cuff</option>
+                            <option value="Aesthetics & Anti-Aging">Aesthetics & Anti-Aging</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>City</label>
+                        <input type="text" id="newLeadCity" class="form-input" value="Lahore">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Initial Patient Query / Message</label>
+                    <textarea id="newLeadMessage" class="form-input" rows="2" placeholder="Patient details or symptoms..."></textarea>
+                </div>
+                <div class="modal-form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddLeadModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">Create & Save Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Test Lead Simulator Modal -->
+    <div class="lead-modal-backdrop" id="testLeadModal" style="display: none;">
+        <div class="lead-modal-container modal-small">
+            <div class="lead-modal-header">
+                <h3>Test Lead Simulator</h3>
+                <button class="modal-close-btn" onclick="closeTestLeadModal()" type="button">✕</button>
+            </div>
+            <div class="lead-modal-body modal-form-body">
+                <p style="font-size: 13px; color: #64748B; margin-bottom: 16px;">
+                    Simulate an incoming lead webhook from Meta Ads, Facebook Lead Forms, or WhatsApp campaigns to verify AI auto-response and CRM pipeline.
+                </p>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Simulated Name</label>
+                        <input type="text" id="simName" class="form-input" value="Amna Rafique">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Simulated Phone</label>
+                        <input type="tel" id="simPhone" class="form-input" value="03214567890">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Ad Source</label>
+                        <select id="simSource" class="form-input">
+                            <option value="meta_ad">Meta Ad (Facebook / Instagram)</option>
+                            <option value="whatsapp">WhatsApp Inbound</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Campaign Name</label>
+                        <input type="text" id="simCampaign" class="form-input" value="Knee Pain Relief Oct 2026">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Simulated Inquiry Message</label>
+                    <textarea id="simMessage" class="form-input" rows="2">Mujhe knee joint pain hai 2 saal se, kya Dr. Zaheer ki appointment mil sakti hai?</textarea>
+                </div>
+                <div class="modal-form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeTestLeadModal()">Cancel</button>
+                    <button type="button" class="btn-submit" onclick="simulateTestLead()">Simulate Webhook Trigger</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Lead Booking Quick Modal -->
+    <div class="lead-modal-backdrop" id="leadBookingModal" style="display: none;">
+        <div class="lead-modal-container modal-small">
+            <div class="lead-modal-header">
+                <h3>Quick Appointment Booking</h3>
+                <button class="modal-close-btn" onclick="closeLeadBookingModal()" type="button">✕</button>
+            </div>
+            <div class="lead-modal-body modal-form-body">
+                <div class="form-group">
+                    <label>Patient Name</label>
+                    <input type="text" id="bookPatientName" class="form-input" readonly>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Consultation Date</label>
+                        <input type="date" id="bookDate" class="form-input" onchange="loadBookingSlotsForModal()">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Time Slot</label>
+                        <select id="bookTimeSlot" class="form-input">
+                            <option value="">Select Date First</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Consultation Type</label>
+                    <select id="bookApptType" class="form-input">
+                        <option value="In-Person Consultation">In-Person Consultation (Stay Young Clinic Lahore)</option>
+                        <option value="Prolotherapy Assessment">Prolotherapy Assessment</option>
+                        <option value="PRP Therapy Consultation">PRP Therapy Consultation</option>
+                        <option value="Virtual Online Consultation">Virtual Online Consultation</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Clinical Notes</label>
+                    <input type="text" id="bookNotes" class="form-input" placeholder="Specific pain concerns...">
+                </div>
+                <div class="modal-form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeLeadBookingModal()">Cancel</button>
+                    <button type="button" class="btn-submit" onclick="confirmLeadBooking()">Confirm & Generate Token</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="admin.js"></script>
+    <script>
+        // Real-time Pakistan Clock
+        function updateLahoreClock() {
+            const clockEl = document.getElementById("lahoreLiveClock");
+            if (clockEl) {
+                const now = new Date();
+                const options = { timeZone: "Asia/Karachi", hour12: true, hour: "numeric", minute: "2-digit", second: "2-digit" };
+                clockEl.textContent = now.toLocaleTimeString("en-US", options) + " PKT";
+            }
+        }
+        setInterval(updateLahoreClock, 1000);
+        updateLahoreClock();
+
+        // Initialize Lucide Icons
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

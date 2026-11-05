@@ -1,0 +1,419 @@
+/* =========================================================
+   DR. MUHAMMAD ZAHEER ANJUM CLINIC
+   EXECUTIVE STAFF AUTHENTICATION - LUXURY MEDICAL UI
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #070D1B;
+    color: #F8FAFC;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    background: #070D1B;
+}
+
+/* Ambient Medical Glow */
+.login-ambient-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, rgba(16, 185, 129, 0.05) 40%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    z-index: 10;
+}
+
+.login-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 22px;
+    padding: 40px 36px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 35px rgba(14, 165, 233, 0.08);
+}
+
+/* Brand Header */
+.login-brand {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.brand-badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0284C7 0%, #0D9488 100%);
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);
+}
+
+.brand-badge i {
+    width: 26px;
+    height: 26px;
+}
+
+.login-brand h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+}
+
+.doctor-spec {
+    font-size: 13px;
+    color: #38BDF8;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.clinic-subtag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 8px;
+}
+
+.clinic-subtag .bullet {
+    color: #475569;
+}
+
+/* Demo Credentials Helper Chip */
+.demo-credentials-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(14, 165, 233, 0.08);
+    border: 1px dashed rgba(14, 165, 233, 0.35);
+    border-radius: 12px;
+    padding: 11px 14px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.demo-credentials-card:hover {
+    background: rgba(14, 165, 233, 0.15);
+    border-color: #38BDF8;
+    transform: translateY(-1px);
+}
+
+.demo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(14, 165, 233, 0.2);
+    color: #38BDF8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.demo-icon i {
+    width: 16px;
+    height: 16px;
+}
+
+.demo-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.demo-info strong {
+    font-size: 12px;
+    font-weight: 600;
+    color: #E2E8F0;
+}
+
+.demo-info span {
+    font-size: 11.5px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+.demo-info code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #38BDF8;
+    font-family: monospace;
+}
+
+.demo-action-icon {
+    width: 16px;
+    height: 16px;
+    color: #F59E0B;
+}
+
+/* Login Form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.form-group label {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #E2E8F0;
+    margin-bottom: 6px;
+}
+
+.auth-security-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #34D399;
+}
+
+.auth-security-tag i {
+    width: 11px;
+    height: 11px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: #64748B;
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.form-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px 0 42px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 11px;
+    color: #FFFFFF;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: #0EA5E9;
+    background: rgba(15, 23, 42, 0.9);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
+.form-input:focus ~ .input-icon {
+    color: #38BDF8;
+}
+
+.password-wrapper .form-input {
+    padding-right: 44px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #64748B;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.toggle-password i {
+    width: 18px;
+    height: 18px;
+}
+
+.toggle-password:hover {
+    color: #E2E8F0;
+}
+
+/* Submit Button */
+.btn-login {
+    height: 48px;
+    background: linear-gradient(135deg, #0284C7 0%, #0D9488 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 11px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
+    transition: all 0.2s ease;
+}
+
+.btn-login:hover {
+    box-shadow: 0 6px 22px rgba(2, 132, 199, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-login:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-icon {
+    width: 17px;
+    height: 17px;
+    transition: transform 0.2s ease;
+}
+
+.btn-login:hover .btn-icon {
+    transform: translateX(3px);
+}
+
+/* Error message */
+.login-error {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #FCA5A5;
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-error i {
+    width: 16px;
+    height: 16px;
+    color: #EF4444;
+    flex-shrink: 0;
+}
+
+.login-error.hidden {
+    display: none;
+}
+
+/* Security strip */
+.security-strip {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.security-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #64748B;
+}
+
+.security-item i {
+    width: 14px;
+    height: 14px;
+    color: #10B981;
+}
+
+/* Footer Link */
+.login-footer {
+    margin-top: 22px;
+    text-align: center;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #94A3B8;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.back-link i {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.2s ease;
+}
+
+.back-link:hover {
+    color: #38BDF8;
+}
+
+.back-link:hover i {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 22px;
+    }
+}

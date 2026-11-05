@@ -1,0 +1,4 @@
+﻿const mongoose=require('mongoose');
+const {getMongoOptions}=require('../config/environment');
+const {configureKhurram}=require('../services/configureKhurram');
+(async()=>{try{const {uri,options}=getMongoOptions();await mongoose.connect(uri,options);const result=await configureKhurram();console.log(JSON.stringify({database:mongoose.connection.name,doctor:'Dr. Khurram Mansoor',matchingRecords:result.doctors.filter(d=>d.id==='dr-khurram').length,active:true,verifiedSchedule:true,days:'Monday–Friday',hours:'09:00–12:30',durationMinutes:7,appointmentTimesOrStatusesModified:0}));}finally{await mongoose.disconnect();}})().catch(error=>{console.error(JSON.stringify({configured:false,errorType:error.name,message:'Doctor configuration did not complete. Check database access and validated settings.'}));process.exitCode=1;});

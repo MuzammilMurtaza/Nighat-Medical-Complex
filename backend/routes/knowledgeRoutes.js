@@ -1,0 +1,9 @@
+﻿const express = require('express');
+const { protectAdmin } = require('../middleware/authMiddleware');
+const knowledge = require('../services/knowledgeService');
+const { successResponse, errorResponse } = require('../utils/response');
+const router = express.Router();
+router.get('/', async (req,res,next) => { try { return successResponse(res,200,'Approved clinic information',await knowledge.getKnowledge()); } catch(e) { next(e); } });
+router.get('/admin', protectAdmin, async (req,res,next) => { try { return successResponse(res,200,'Knowledge settings',await knowledge.getRawKnowledge()); } catch(e) { next(e); } });
+router.put('/admin', protectAdmin, async (req,res) => { try { return successResponse(res,200,'Knowledge settings saved',await knowledge.updateKnowledge(req.body)); } catch(e) { return errorResponse(res,e.statusCode || (e.name === 'ValidationError' || e.name === 'StrictModeError' ? 400 : 503),'Unable to save: check field types, verification flags, schedule times, and database connection.'); } });
+module.exports = router;

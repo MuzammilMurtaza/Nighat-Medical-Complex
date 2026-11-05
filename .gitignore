@@ -1,0 +1,36 @@
+# node_modules/
+# .env
+# uploads/
+# *.log
+# .DS_Store
+# coverage/
+# dist/
+# build/
+# scratch/
+
+# .migration-backup/
+# .migration-work/
+
+# .booking-work/
+
+
+node_modules/
+.env
+.env.*
+!.env.example
+uploads/
+*.log
+.DS_Store
+coverage/
+dist/
+build/
+scratch/
+
+.migration-backup/
+.migration-work/
+.booking-work/
+
+.qa/
+.redesign-backup/
+.env.*
+!.env.example

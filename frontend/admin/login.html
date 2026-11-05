@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Authentication | Nighat Medical Complex</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23087f8c%22/%3E%3Cpath d=%22M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z%22 fill=%22white%22/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="../patient/icons.js"></script>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-wrapper">
+        <!-- Ambient radial background light -->
+        <div class="login-ambient-glow"></div>
+
+        <div class="login-container">
+            <div class="login-card">
+                <!-- Brand Header -->
+                <div class="login-brand">
+                    <div class="brand-badge">
+                        <i data-lucide="shield-plus"></i>
+                    </div>
+                    <h2>Nighat Medical Complex</h2>
+                    <p class="doctor-spec">Pain Management & Regenerative Medicine Specialist</p>
+                    <div class="clinic-subtag">
+                        <span>Stay Young Clinic, Lahore</span>
+                        <span class="bullet">•</span>
+                        <span>Clinical Staff Gateway</span>
+                    </div>
+                </div>
+
+                <!-- One-click Demo Credentials Helper Chip -->
+                <div class="demo-credentials-card" onclick="fillDemoCredentials()">
+                    <div class="demo-icon">
+                        <i data-lucide="key-round"></i>
+                    </div>
+                    <div class="demo-info">
+                        <strong>Click to Pre-fill Admin Credentials</strong>
+                        <span>User: <code>admin</code> | Pass: <code>Admin@123456</code></span>
+                    </div>
+                    <i data-lucide="sparkles" class="demo-action-icon"></i>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="email">Staff Email / Username</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="mail" class="input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="email" 
+                                class="form-input" 
+                                placeholder="admin@mza-clinic.com" 
+                                required 
+                                autocomplete="username"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label for="password">Password</label>
+                            <span class="auth-security-tag"><i data-lucide="lock"></i> Encrypted</span>
+                        </div>
+                        <div class="input-wrapper password-wrapper">
+                            <i data-lucide="lock-keyhole" class="input-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                class="form-input" 
+                                placeholder="••••••••••••" 
+                                required 
+                                autocomplete="current-password"
+                            >
+                            <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="signInButton">
+                        <span>Authenticate to Dashboard</span>
+                        <i data-lucide="arrow-right" class="btn-icon"></i>
+                    </button>
+
+                    <div class="login-error hidden" id="loginError">
+                        <i data-lucide="alert-circle"></i>
+                        <span>Invalid email or password credentials.</span>
+                    </div>
+                </form>
+
+                <!-- Security Assurance Badges -->
+                <div class="security-strip">
+                    <div class="security-item">
+                        <i data-lucide="shield-check"></i>
+                        <span>256-Bit TLS</span>
+                    </div>
+                    <div class="security-item">
+                        <i data-lucide="database"></i>
+                        <span>MongoDB Active</span>
+                    </div>
+                    <div class="security-item">
+                        <i data-lucide="user-check"></i>
+                        <span>Role Guard</span>
+                    </div>
+                </div>
+
+                <!-- Footer navigation link -->
+                <div class="login-footer">
+                    <a href="../patient/index.html" class="back-link">
+                        <i data-lucide="chevron-left"></i>
+                        <span>Return to Patient Concierge Portal</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+    <script>
+        function fillDemoCredentials() {
+            const emailInput = document.getElementById("email");
+            const passInput = document.getElementById("password");
+            if (emailInput && passInput) {
+                emailInput.value = "admin";
+                passInput.value = "Admin@123456";
+                emailInput.focus();
+                
+                const card = document.querySelector(".demo-credentials-card");
+                if (card) {
+                    card.style.borderColor = "#10B981";
+                    setTimeout(() => { card.style.borderColor = ""; }, 1500);
+                }
+            }
+        }
+        lucide.createIcons();
+    </script>
+</body>
+</html>
