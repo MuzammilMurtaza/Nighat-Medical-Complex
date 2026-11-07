@@ -37,7 +37,9 @@ app.use(cors({
     origin: (origin, callback) => callback(null, true),
     credentials: true
 }));
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '10mb', verify: (req, res, buffer) => {
+    if (req.originalUrl.split('?')[0] === '/api/leads/webhook') req.rawBody = Buffer.from(buffer);
+} }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('dev'));
 

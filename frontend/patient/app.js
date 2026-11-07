@@ -44,7 +44,7 @@ const state = {
     currentStep: null,
 
     sessionId: (() => {
-        const createSessionId = () => "sess_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+        const createSessionId = () => "sess_" + (crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(24)), b => b.toString(16).padStart(2, "0")).join(""));
         try {
             let sid = localStorage.getItem("mza_patient_session_id");
             if (!sid) {

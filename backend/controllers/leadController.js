@@ -5,7 +5,7 @@ const Patient = require('../models/Patient');
 const { generateLeadId } = require('../utils/leadIdGenerator');
 const { generateAppointmentId } = require('../utils/appointmentIdGenerator');
 const { generateTokenNumber } = require('../utils/tokenGenerator');
-const { verifyMetaWebhook, handleMetaWebhookEvent } = require('../services/metaWebhookService');
+const { verifyMetaWebhook, handleMetaWebhookEvent, verifySignature } = require('../services/metaWebhookService');
 const { processIncomingLeadMessage, sendAiResponse } = require('../services/leadAiService');
 const { successResponse, errorResponse } = require('../utils/response');
 
@@ -31,6 +31,9 @@ const verifyWebhook = (req, res) => {
 // 2. POST /api/leads/webhook (Meta Event Receiver)
 const handleWebhook = async (req, res, next) => {
     try {
+        if (!verifySignature(req.rawBody, req.get('x-hub-signature-256'), process.env.META_APP_SECRET)) {
+            return res.status(403).json({ success: false, message: 'Invalid webhook signature.' });
+        }
         const result = await handleMetaWebhookEvent(req.body, (eventData) => {
             broadcastSSE(eventData.type, eventData);
         });

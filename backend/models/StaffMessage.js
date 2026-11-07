@@ -72,6 +72,8 @@ const staffMessageSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    aiConsent: { type: Boolean, default: null },
+    aiConsentAt: { type: Date, default: null },
     language: { type: String, default: 'english' },
     channel: { type: String, default: 'website' },
     mode: {

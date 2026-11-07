@@ -29,6 +29,7 @@ const memorySessionStore = new Map();
 const memoryBookedSlots = new Map();
 
 const knowledge = require('./knowledgeService');
+const aiAssistant = require('./ai/assistant');
 const CLINIC_INFO = new Proxy({}, { get: (_, key) => knowledge.info()[key] });
 
 const MEDICAL_DISCLAIMER_EN = "⚠️ *Medical Notice: I am an AI Clinic Assistant. I provide clinic information and facilitate appointment scheduling. I do not provide definitive diagnoses or prescribe medications.*";
@@ -216,7 +217,7 @@ const MESSAGES = {
 /**
  * External LLM Adapter (Optional: Gemini / OpenAI)
  */
-async function callOptionalLLM() { return null; }
+async function callOptionalLLM(message, session) { return aiAssistant.interpret({ message, session, knowledge: knowledge.currentKnowledge() }); }
 
 /**
  * Main Entry Point: Process incoming message from Website or WhatsApp
@@ -233,9 +234,9 @@ async function processConversationWithContext({
     existingSessionDoc = null,
     metadata = {}
 }) {
-    const sid = sessionId || `sess_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+    const sid = sessionId || 'sess_' + require('node:crypto').randomUUID();
     const cleanMsg = (messageText || '').trim();
-    const cleanPayload = (payload || '').trim();
+    let cleanPayload = (payload || '').trim();
     const cleanAction = (action || '').trim();
     const lowerMsg = cleanMsg.toLowerCase();
 
@@ -244,12 +245,6 @@ async function processConversationWithContext({
     if (!sessionDoc && isDBConnected()) {
         try {
             sessionDoc = await StaffMessage.findOne({ sessionId: sid });
-            if (!sessionDoc && phone) {
-                sessionDoc = await StaffMessage.findOne({ phone }).sort({ updatedAt: -1 });
-                if (sessionDoc && !sessionDoc.sessionId) {
-                    sessionDoc.sessionId = sid;
-                }
-            }
         } catch (e) {
             sessionDoc = null;
         }
@@ -298,7 +293,8 @@ async function processConversationWithContext({
     if (phone && (!sessionDoc.phone || sessionDoc.phone === 'Not provided')) sessionDoc.phone = phone;
     if (channel) sessionDoc.channel = channel;
 
-    const currentLang = sessionDoc.language === 'urdu' ? 'ur' : 'en';
+    let currentLang = sessionDoc.language === 'urdu' ? 'ur' : 'en';
+    let aiFailure = null;
 
     // 2. Check if Human Staff Mode (MANUAL) is active
     if (sessionDoc.mode === 'MANUAL') {
@@ -317,6 +313,15 @@ async function processConversationWithContext({
     }
 
     // 3. Emergency Detection (Red Flag Safety)
+    const aiConfigured = require('./ai/provider').status().configured;
+    if (cleanPayload === 'AI_CONSENT_ALLOW' || cleanPayload === 'AI_CONSENT_DECLINE' || /^(?:stop|disable|turn off) (?:external )?ai$/i.test(cleanMsg)) {
+        sessionDoc.aiConsent = cleanPayload === 'AI_CONSENT_ALLOW';
+        sessionDoc.aiConsentAt = new Date();
+        return recordAiMessage(sessionDoc, sessionDoc.aiConsent ?
+            (currentLang === 'ur' ? 'انتظامی اے آئی فعال ہے۔ براہ کرم شناختی یا طبی تفصیلات چیٹ میں نہ بھیجیں۔' : 'Administrative AI is enabled for this chat. Please do not send identifying or medical details in general chat.') :
+            (currentLang === 'ur' ? 'بیرونی اے آئی بند ہے۔ بکنگ مینو دستیاب ہے۔' : 'External AI stays off for this chat. The booking menu remains available.'), MESSAGES.MAIN_MENU_OPTIONS[currentLang], 'OPTIONS', sessionDoc.activeWorkflow, sessionDoc.workflowStep);
+    }
+
     const isEmergency = EMERGENCY_KEYWORDS.some(k => lowerMsg.includes(k));
     if (isEmergency) {
         if (isDBConnected()) {
@@ -384,6 +389,35 @@ async function processConversationWithContext({
     if (cleanPayload === 'CHANGE_LANGUAGE' || lowerMsg.includes('change language') || lowerMsg.includes('زبان تبدیل')) {
         const promptText = `Please select your preferred language / اپنی زبان منتخب کریں:`;
         return recordAiMessage(sessionDoc, promptText, MESSAGES.LANGUAGE_OPTIONS, 'OPTIONS', null, 'LANGUAGE_SELECTION');
+    }
+
+    // LLM may plan an administrative reply or start a workflow, but never sees
+    // booking fields/history and never executes or confirms an appointment action.
+    const structuredAction = /^(?:LANG_|NAV_|DATE_|SLOT_|BOOK_APPOINTMENT$|MANAGE_APPOINTMENT$|DOCTORS_INFO$|TREATMENT_INFO$|CLINIC_INFO$|SPEAK_STAFF$|CHANGE_LANGUAGE$|RESUME_BOOKING$|CONFIRM_BOOKING$)/.test(cleanPayload);
+    if (aiConfigured && sessionDoc.aiConsent == null && !sessionDoc.activeWorkflow && !structuredAction) {
+        return recordAiMessage(sessionDoc, currentLang === 'ur' ?
+            'اختیاری انتظامی اے آئی کے لیے آپ کے عمومی پیغام اور تصدیق شدہ کلینک معلومات Google Gemini کو بھیجی جا سکتی ہیں۔ بکنگ فارم کی تفصیلات اور مریضوں کا ریکارڈ نہیں بھیجا جاتا۔ شناختی یا طبی تفصیلات نہ لکھیں۔ کیا آپ رضامند ہیں؟' :
+            'Optional administrative AI sends your general message (with limited redaction) and approved clinic facts to Google Gemini. Booking-form details and patient records are excluded. Do not include identifying or medical details. You can decline and still book using the menu.', [
+                { label: currentLang === 'ur' ? 'اے آئی استعمال کریں' : 'Allow administrative AI', value: 'AI_CONSENT_ALLOW', action: 'send_option' },
+                { label: currentLang === 'ur' ? 'مینو استعمال کریں' : 'Use menu without external AI', value: 'AI_CONSENT_DECLINE', action: 'send_option' }
+            ], 'OPTIONS', null, null);
+    }
+    if (!sessionDoc.activeWorkflow && !structuredAction && (!aiConfigured || sessionDoc.aiConsent === true)) {
+        const ai = await callOptionalLLM(cleanMsg, sessionDoc);
+        if (ai.plan) {
+            const plan = ai.plan;
+            sessionDoc.language = plan.language;
+            currentLang = plan.language === 'urdu' ? 'ur' : 'en';
+            if (plan.intent === 'book') cleanPayload = 'BOOK_APPOINTMENT';
+            else if (plan.intent === 'manage') cleanPayload = 'MANAGE_APPOINTMENT';
+            else {
+                if (plan.intent === 'staff') { sessionDoc.mode = 'MANUAL'; sessionDoc.status = 'pending'; }
+                return recordAiMessage(sessionDoc, plan.intent === 'staff' ?
+                    (currentLang === 'ur' ? 'آپ کی درخواست کلینک عملے کے لیے درج کر دی گئی ہے۔' : 'Your request has been recorded for clinic staff.') :
+                    aiAssistant.render(plan, knowledge.currentKnowledge()), [...MESSAGES.MAIN_MENU_OPTIONS[currentLang], ...(aiConfigured ? [{ label: currentLang === 'ur' ? 'بیرونی اے آئی بند کریں' : 'Use menu without external AI', value: 'AI_CONSENT_DECLINE', action: 'send_option' }] : [])], 'OPTIONS', null, null,
+                    { ai: ai.evidence, aiTopic: plan.topic });
+            }
+        } else if (!['DISABLED', 'PRIVACY_REVIEW_REQUIRED', 'MISSING_KEY'].includes(ai.unavailable)) aiFailure = ai.unavailable;
     }
 
     // 7. General Greetings ("Hi", "Hello", "Salam", "Aoa", "Hey")
@@ -468,7 +502,7 @@ async function processConversationWithContext({
     }
 
     const faq = knowledge.currentKnowledge().faqs.find(item => item.question.trim().toLowerCase() === lowerMsg && item.language === (sessionDoc.language === 'roman_urdu' ? 'roman_urdu' : currentLang === 'ur' ? 'urdu' : 'english'));
-    const defaultReply = faq ? faq.answer : knowledge.unknown(currentLang) + '\n\n' + (currentLang === 'ur' ? MEDICAL_DISCLAIMER_UR : MEDICAL_DISCLAIMER_EN);
+    const defaultReply = faq ? faq.answer : aiFailure ? aiAssistant.LOCAL[sessionDoc.language]?.fallback || aiAssistant.LOCAL.english.fallback : knowledge.unknown(currentLang) + '\n\n' + (currentLang === 'ur' ? MEDICAL_DISCLAIMER_UR : MEDICAL_DISCLAIMER_EN);
     return recordAiMessage(sessionDoc, defaultReply, MESSAGES.MAIN_MENU_OPTIONS[currentLang], 'OPTIONS', sessionDoc.activeWorkflow, sessionDoc.workflowStep);
 
 }

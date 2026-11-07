@@ -14,13 +14,14 @@ const verifyMetaWebhook = (req, res) => {
     const token = req.query['hub.verify_token'];
     const challenge = req.query['hub.challenge'];
 
-    const expectedToken = process.env.META_VERIFY_TOKEN || 'dr_zaheer_meta_verify_token_2026';
+    const expectedToken = process.env.META_VERIFY_TOKEN;
+    if (!expectedToken || /^(dr_zaheer_|your_)/.test(expectedToken)) return res.status(503).json({ error: 'Webhook verification is not configured.' });
 
     if (mode === 'subscribe' && token === expectedToken) {
         console.log('[Meta Webhook] Webhook verified successfully by Meta challenge handshake');
         return res.status(200).send(challenge);
     } else {
-        console.warn('[Meta Webhook] Verification failed. Token mismatch or bad mode:', { mode, token });
+        console.warn('[Meta Webhook] Verification failed. Token mismatch or bad mode:', { mode });
         return res.status(403).json({ error: 'Webhook verification token mismatch' });
     }
 };
@@ -29,7 +30,8 @@ const verifyMetaWebhook = (req, res) => {
  * Validates Meta X-Hub-Signature-256 HMAC
  */
 const verifySignature = (rawBody, signatureHeader, appSecret) => {
-    if (!appSecret || !signatureHeader) return true; // Pass if secret not configured in dev
+    if (!appSecret || /^(dr_zaheer_|your_)/.test(appSecret) || !Buffer.isBuffer(rawBody) ||
+        typeof signatureHeader !== 'string' || !/^sha256=[a-f0-9]{64}$/.test(signatureHeader)) return false;
     try {
         const hmac = crypto.createHmac('sha256', appSecret);
         const digest = 'sha256=' + hmac.update(rawBody).digest('hex');
@@ -209,8 +211,8 @@ const sendWhatsAppCloudMessage = async (toPhone, engineResult) => {
     const token = process.env.META_ACCESS_TOKEN;
     const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
-    if (!token || !phoneId || token === 'dr_zaheer_access_token_dev') {
-        console.log('[WhatsApp Adapter] Outbound simulated for dev. Destination:', toPhone);
+    if (process.env.WHATSAPP_DELIVERY_ENABLED !== 'true' || !token || !phoneId || !/^\d+$/.test(phoneId) || /^(dr_zaheer_|your_)/.test(token)) {
+        console.log('[WhatsApp Adapter] Outbound delivery disabled or not configured.');
         return;
     }
 
@@ -225,7 +227,8 @@ const sendWhatsAppCloudMessage = async (toPhone, engineResult) => {
             body: JSON.stringify(payload)
         });
         const data = await res.json();
-        console.log('[WhatsApp Adapter] Cloud API Response:', data);
+        if (!res.ok) throw new Error('WhatsApp delivery failed');
+        console.log('[WhatsApp Adapter] Cloud API message accepted.');
     } catch (e) {
         console.error('[WhatsApp Adapter] Failed to dispatch Cloud API message:', e.message);
     }

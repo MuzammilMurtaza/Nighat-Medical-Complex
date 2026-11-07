@@ -23,7 +23,7 @@ const {
 // 1. Meta Webhook & Public Simulator Endpoints
 router.get('/webhook', verifyWebhook);
 router.post('/webhook', handleWebhook);
-router.post('/incoming-test', simulateIncomingLead);
+router.post('/incoming-test', protectAdmin, simulateIncomingLead);
 router.get('/stream', leadStream);
 
 // 2. Admin Protected Lead Management & Unified Inbox Endpoints

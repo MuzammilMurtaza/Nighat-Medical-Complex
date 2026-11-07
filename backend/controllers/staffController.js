@@ -87,7 +87,8 @@ const handlePatientMessage = async (req, res, next) => {
             return errorResponse(res, 400, 'Message content is required.');
         }
 
-        const sid = sessionId || `session_${phone || 'guest'}_${Date.now()}`;
+        if (sessionId && (typeof sessionId !== 'string' || !/^[a-zA-Z0-9_-]{8,160}$/.test(sessionId))) return errorResponse(res,400,'Invalid chat session.');
+        const sid = sessionId || 'session_' + require('node:crypto').randomUUID();
         const pName = (patientName || 'Patient').trim();
         const pPhone = (phone || '').trim();
         const cleanMsg = message.trim();
@@ -102,12 +103,6 @@ const handlePatientMessage = async (req, res, next) => {
                 if (sid) {
                     conversation = await StaffMessage.findOne({ sessionId: sid });
                 }
-                if (!conversation && pPhone) {
-                    conversation = await StaffMessage.findOne({ phone: pPhone }).sort({ updatedAt: -1 });
-                    if (conversation && sid) {
-                        conversation.sessionId = sid;
-                    }
-                }
             } catch (e) {
                 conversation = null;
             }
@@ -115,10 +110,6 @@ const handlePatientMessage = async (req, res, next) => {
 
         if (!conversation) {
             if (sid) conversation = memoryStaffMessages.find(m => m.sessionId === sid);
-            if (!conversation && pPhone) {
-                conversation = memoryStaffMessages.find(m => m.phone === pPhone);
-                if (conversation && sid) conversation.sessionId = sid;
-            }
         }
 
         if (!conversation) {
@@ -259,8 +250,8 @@ const handlePatientMessage = async (req, res, next) => {
 const syncPatientChat = async (req, res, next) => {
     try {
         const { sessionId, phone, afterSequence, afterMessageId } = req.query;
-        if (!sessionId && !phone) {
-            return errorResponse(res, 400, 'Session ID or Phone number is required for chat synchronization.');
+        if (typeof sessionId !== 'string' || !/^[a-zA-Z0-9_-]{8,160}$/.test(sessionId)) {
+            return errorResponse(res,400,'A valid private chat session is required. Phone-only recovery is not authorized.');
         }
 
         let conversation = null;
@@ -269,9 +260,6 @@ const syncPatientChat = async (req, res, next) => {
                 if (sessionId) {
                     conversation = await StaffMessage.findOne({ sessionId });
                 }
-                if (!conversation && phone) {
-                    conversation = await StaffMessage.findOne({ phone }).sort({ updatedAt: -1 });
-                }
             } catch (e) {
                 conversation = null;
             }
@@ -279,7 +267,6 @@ const syncPatientChat = async (req, res, next) => {
 
         if (!conversation) {
             if (sessionId) conversation = memoryStaffMessages.find(m => m.sessionId === sessionId);
-            if (!conversation && phone) conversation = memoryStaffMessages.find(m => m.phone === phone);
         }
 
         if (!conversation) {
@@ -339,7 +326,8 @@ const requestHandover = async (req, res, next) => {
             return errorResponse(res, 400, 'Patient Name, Phone Number, and Message details are required for staff handover.');
         }
 
-        const sid = sessionId || `session_${phone.trim()}_${Date.now()}`;
+        if (sessionId && (typeof sessionId !== 'string' || !/^[a-zA-Z0-9_-]{8,160}$/.test(sessionId))) return errorResponse(res,400,'Invalid chat session.');
+        const sid = sessionId || 'session_' + require('node:crypto').randomUUID();
         const pName = patientName.trim();
         const pPhone = phone.trim();
         const pMsg = message.trim();
@@ -348,7 +336,6 @@ const requestHandover = async (req, res, next) => {
         if (isDBConnected()) {
             try {
                 if (sid) conversation = await StaffMessage.findOne({ sessionId: sid });
-                if (!conversation && pPhone) conversation = await StaffMessage.findOne({ phone: pPhone }).sort({ updatedAt: -1 });
             } catch (e) {
                 conversation = null;
             }
@@ -356,7 +343,6 @@ const requestHandover = async (req, res, next) => {
 
         if (!conversation) {
             if (sid) conversation = memoryStaffMessages.find(m => m.sessionId === sid);
-            if (!conversation && pPhone) conversation = memoryStaffMessages.find(m => m.phone === pPhone);
         }
 
         const seq = getNextSequence(conversation);

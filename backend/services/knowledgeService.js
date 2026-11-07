@@ -66,4 +66,4 @@ async function updateKnowledge(payload) {
  return KnowledgeBase.findOneAndUpdate({ key: KEY }, { $set: update }, { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true });
 }
 async function withKnowledge(fn) { return context.run(await getKnowledge(), fn); }
-module.exports = { bookingDoctor, KEY, SYSTEM_INSTRUCTIONS, GREETINGS, getRawKnowledge, getKnowledge, updateKnowledge, currentKnowledge, info, answer, matchTopic, unknown, withKnowledge };
+module.exports = { approve, bookingDoctor, KEY, SYSTEM_INSTRUCTIONS, GREETINGS, getRawKnowledge, getKnowledge, updateKnowledge, currentKnowledge, info, answer, matchTopic, unknown, withKnowledge };
